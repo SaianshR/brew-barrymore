@@ -46,7 +46,8 @@ def lift_ratio(index : list, data : pd.DataFrame, capture_column : str):
                 lift_dict.iat[i, j] = 0 #[brand_1][brand_2] = 0
             else:
                 lift_dict.iat[i, j] = round(1/ans, 3) #[brand_1][brand_2] = round(1/ans,3)
-    return lift_dict.apply(pd.to_numeric).style.background_gradient(axis=0,cmap='Blues'), lift_dict
+            
+    return lift_dict.reset_index(drop=True).apply(pd.to_numeric).style.background_gradient(axis=0,cmap='Blues'), lift_dict
 
 
 
