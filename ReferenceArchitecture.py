@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.manifold import MDS
 import matplotlib.pyplot as plt
 import random
@@ -31,7 +32,7 @@ def lift_ratio(index : list, data : pd.DataFrame, capture_column : str):
                     count_2 = count_2 + 1
             
             if(brand_1==brand_2):
-                ans = 0
+                ans = np.nan
             else:
                 pa = count_1/total_shape
                 pb = count_2/total_shape
