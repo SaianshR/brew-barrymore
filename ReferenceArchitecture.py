@@ -8,9 +8,10 @@ import random
 Keyword arguments:
 index -- (list) object containing the items/things of interest to calculate the lift ratio on
 data -- (Pandas DataFrame) object with data that has feature/column names that are contained in the 'index' argument
+capture_column -- (variable) column to pull data from
 Return: Pandas DataFrame that displays the lift ratios for the given features
 """
-def lift_ratio(index : list, data : pd.DataFrame):
+def lift_ratio(index : list, data : pd.DataFrame, capture_column : str):
     lift_dict = pd.DataFrame(index=index, columns=index)
     total_shape = data.shape[0]
     for i in range(len(index)):
@@ -21,7 +22,7 @@ def lift_ratio(index : list, data : pd.DataFrame):
             count_2 = 0
             count_3 = 0
             
-            for txt in data.comments.values:
+            for txt in data[capture_column].values:
                 if brand_1 in txt and brand_2 in txt:
                     count_3 = count_3 + 1
                 elif brand_1 in txt and brand_2 not in txt:
@@ -30,16 +31,21 @@ def lift_ratio(index : list, data : pd.DataFrame):
                     count_2 = count_2 + 1
             
             if(brand_1==brand_2):
-                lift_dict[brand_1][brand_2] = 0
-
+                ans = 0
             else:
                 pa = count_1/total_shape
                 pb = count_2/total_shape
                 pab = count_3/total_shape
-                ans = (pa*pb)/pab
+                try:
+                    ans = (pa*pb)/pab
+                except ZeroDivisionError:
+                    ans = 0
                 
+            if ans == 0:
+                lift_dict[brand_1][brand_2] = 0
+            else:
                 lift_dict[brand_1][brand_2] = round(1/ans,3)
-    return lift_dict.apply(pd.to_numeric).style.background_gradient(axis=0,cmap='Blues')
+    return lift_dict.apply(pd.to_numeric).style.background_gradient(axis=0,cmap='Blues'), lift_dict
 
 
 
